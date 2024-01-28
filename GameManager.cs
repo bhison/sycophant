@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using GenerativeAudio;
 using UnityEngine;
 
+[RequireComponent(typeof(GameFlow))]
+[RequireComponent(typeof(ElephantActions))]
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -34,9 +37,11 @@ public class GameManager : MonoBehaviour
     public bool GameInSession{ get; private set; }
     public bool TaskInSession{ get; private set; }
     public float RapportPercent { get; private set; }
-    public float GameRunTime { get; private set; }
+    public float GameRunTime { get; set; }
 
     public string PlayerName = "Assistant";
+
+    private GameFlow _gameFlow;
 
     public bool GameLengthMinExceeded => GameInSession && GameRunTime > GameLengthMinimum;
 
@@ -44,6 +49,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         InitSingleton();
+        _gameFlow = GetComponent<GameFlow>();
     }
     
     
@@ -53,6 +59,8 @@ public class GameManager : MonoBehaviour
         {
             GameRunTime += Time.deltaTime;
         }
+
+        _gameFlow.DoGameStuff();
     }
 
     // This should be triggered when the game scene starts

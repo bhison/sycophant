@@ -7,11 +7,7 @@ using UnityEngine;
 public class ElephantController : MonoBehaviour
 {
     public static ElephantController Instance { get; private set; }
-
-    public JudgeForLaughs judgeForLaughs;
-
-    public bool isSpeaking = false;
-
+    
     private void Awake()
     {
         if (Instance != null && Instance != this) 
@@ -24,6 +20,11 @@ public class ElephantController : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         } 
     }
+    
+    public JudgeForLaughs judgeForLaughs;
+
+    public bool isSpeaking = false;
+    public bool isBusy = false;
     
     public bool Speaking { get; private set; }
     public ClothesType? wantedClothesType;
@@ -38,7 +39,7 @@ public class ElephantController : MonoBehaviour
         judgeForLaughs = GetComponent<JudgeForLaughs>();
     }
 
-    void ResetWants()
+    public void ResetWants()
     {
         wantedClothesType = null;
         wantedDescriber = null;

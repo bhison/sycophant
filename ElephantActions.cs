@@ -38,6 +38,7 @@ public class ElephantActions : MonoBehaviour
             LookingForALaugh = false
         };
         SaySomething.Instance.Speak(dialogueParameters);
+        ElephantController.Instance.isBusy = true;
     }
 
     public void ReceiveItem(ClothesType recClothesType, Describer recDescriber)
@@ -77,6 +78,11 @@ public class ElephantActions : MonoBehaviour
             Context = contexts.ToArray(), Guidance = "React to receiving the item", LookingForALaugh = false
         };
         SaySomething.Instance.Speak(dialogueParameters);
+
+        ElephantController.Instance.ResetWants();
+        ElephantController.Instance.isBusy = false;
+
+
     }
 
     public void TellFunnyAnecdote()
@@ -88,6 +94,7 @@ public class ElephantActions : MonoBehaviour
             LookingForALaugh = true
         };
         SaySomething.Instance.Speak(dialogueParameters);
+        ElephantController.Instance.isBusy = true;
     }
 
     public void OffendedAtLackOfLaughter()
@@ -100,6 +107,7 @@ public class ElephantActions : MonoBehaviour
         };
         GameManager.Instance.ChangeRapport(-LaughWrongPenalty);
         SaySomething.Instance.Speak(dialogueParameters);
+        ElephantController.Instance.isBusy = false;
     }
 
     public void AppreciateLaughter()
@@ -113,6 +121,7 @@ public class ElephantActions : MonoBehaviour
         GameManager.Instance.ChangeRapport(LaughCorrectBonus);
 
         SaySomething.Instance.Speak(dialogueParameters);
+        ElephantController.Instance.isBusy = false;
     }
 
     public void ExpressRapportLevel()
@@ -141,6 +150,8 @@ public class ElephantActions : MonoBehaviour
             LookingForALaugh = false
         };
         SaySomething.Instance.Speak(dialogueParameters);
+        ElephantController.Instance.wantedMusicType = changeTo;
+        ElephantController.Instance.isBusy = true;
     }
 
     public void RequestTemperatureChange(Temperature temp)
@@ -152,6 +163,8 @@ public class ElephantActions : MonoBehaviour
             LookingForALaugh = false
         };
         SaySomething.Instance.Speak(dialogueParameters);
+        ElephantController.Instance.wantedTemperature = temp;
+        ElephantController.Instance.isBusy = true;
     }
 
     public void MusicHasChanged(MusicType changedTo)
@@ -179,6 +192,8 @@ public class ElephantActions : MonoBehaviour
             };
             SaySomething.Instance.Speak(dialogueParameters);
         }
+        ElephantController.Instance.ResetWants();
+        ElephantController.Instance.isBusy = false;
     }
 
     public void TemperatureHasChanged(Temperature temperature)
@@ -204,6 +219,8 @@ public class ElephantActions : MonoBehaviour
             };
             SaySomething.Instance.Speak(dialogueParameters);
         }
+        ElephantController.Instance.ResetWants();
+        ElephantController.Instance.isBusy = false;
     }
 
     public void Goodbye()
@@ -219,6 +236,7 @@ public class ElephantActions : MonoBehaviour
             LookingForALaugh = false
         };
         SaySomething.Instance.Speak(dialogueParameters);
+        
     }
 
     public void CancelClothesRequest()
@@ -234,6 +252,13 @@ public class ElephantActions : MonoBehaviour
             };
             SaySomething.Instance.Speak(dialogueParameters);
         }
+        ElephantController.Instance.ResetWants();
+        ElephantController.Instance.isBusy = false;
+    }
+
+    public void CancelOtherReq()
+    {
+        
     }
     
     public void MinorAmusement()
