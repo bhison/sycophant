@@ -219,4 +219,26 @@ public class ElephantActions
             SaySomething.Instance.Speak(dialogueParameters);
         }
     }
+    
+    public void MinorAmusement()
+    {
+        DialogueParameters dialogueParameters = new DialogueParameters
+        {
+            Context = new string[] { "the assistant laughed at something you said which you like" },
+            Guidance = "React with minor amusement, only a couple of words",
+            LookingForALaugh = false
+        };
+        SaySomething.Instance.Speak(dialogueParameters);
+    }
+
+    public void MinorGrump()
+    {
+        DialogueParameters dialogueParameters = new DialogueParameters
+        {
+            Context = new string[] { "You express a minor grump" },
+            Guidance = "React with a minor grump, , only a couple of words",
+            LookingForALaugh = false
+        };
+        SaySomething.Instance.Speak(dialogueParameters);
+    }
 }
