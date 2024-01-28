@@ -45,6 +45,23 @@ public class GameManager : MonoBehaviour
 
     private GameFlow _gameFlow;
 
+    [SerializeField] private float GraceForMusicChange = 5f;
+    public float MusicChangeGraceCountdown = 0;
+    private MusicType internalMusicType = MusicType.EasyListening;
+
+    public MusicType currentMusicType
+    {
+        get
+        {
+            return internalMusicType;
+        }
+        set
+        {
+            internalMusicType = value;
+            MusicChangeGraceCountdown = GraceForMusicChange;
+        }
+    }
+
     public bool GameLengthMinExceeded => GameInSession && GameRunTime > GameLengthMinimum;
 
     // Start is called before the first frame update
@@ -63,6 +80,7 @@ public class GameManager : MonoBehaviour
         }
 
         _gameFlow.DoGameStuff();
+        
         if (waitingToEnd && !ElephantController.Instance.isBusy && !ElephantController.Instance.isSpeaking)
         {
             QuitToLobby();

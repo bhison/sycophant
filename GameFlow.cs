@@ -34,6 +34,17 @@ namespace DefaultNamespace
             var gm = GameManager.Instance;
             var elephant = ElephantController.Instance;
 
+            if (gm.MusicChangeGraceCountdown > 0)
+            {
+                gm.MusicChangeGraceCountdown -= Time.deltaTime;
+                if (gm.MusicChangeGraceCountdown <= 0)
+                {
+                    _elephantActions.MusicHasChanged(gm.currentMusicType);
+                }
+
+                return;
+            }
+
             if (gm.patienceLeftForTask > 0)
             {
                 gm.patienceLeftForTask -= Time.deltaTime;
