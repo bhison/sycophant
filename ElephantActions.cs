@@ -1,9 +1,20 @@
 using System;
 using System.Collections.Generic;
 using GenerativeAudio;
+using UnityEngine;
 
-public class ElephantActions
+public class ElephantActions : MonoBehaviour
 {
+
+    [SerializeField] private float rapportToPatienceDivider = 50;
+    [SerializeField] private float rapportToMoneyMultiplier = 10;
+    [SerializeField] private float badClothesPenalty = 40;
+    [SerializeField] private float badTempPenalty = 20;
+    [SerializeField] private float badMusicPenalty = 30;
+
+    [SerializeField] private float LaughCorrectBonus = 25;
+    [SerializeField] private float LaughWrongPenalty = 40;
+    
     public void ElephantStart()
     {
         DialogueParameters dialogueParameters =
@@ -42,28 +53,28 @@ public class ElephantActions
             ElephantController.Instance.wantedDescriber != null
         )
         {
+            var correct = wantedClothes == recClothesType && wantedDesc == recDescriber;
             contexts.Add(ContextPrompts.AskedFor(wantedClothes, wantedDesc));
             contexts.Add(ContextPrompts.BeenGiven(
-                    wantedClothes == recClothesType && wantedDesc == recDescriber,
+                    correct,
                     recClothesType, recDescriber
                 ));
+            if (correct)
+            {
+                GameManager.Instance.ChangeRapport(
+                    (GameManager.Instance.patience - GameManager.Instance.patienceLeftForTask)/rapportToPatienceDivider);
+               var amount =  GameManager.Instance.RapportPercent * rapportToMoneyMultiplier;
+                contexts.Add("Thank the assistant and give them a tip of £" + (amount));
+                GameManager.Instance.AddTip(amount);
+            }
+            else
+            {
+                GameManager.Instance.ChangeRapport(-badClothesPenalty);
+            }
         }
         DialogueParameters dialogueParameters = new DialogueParameters
         {
             Context = contexts.ToArray(), Guidance = "React to receiving the item", LookingForALaugh = false
-        };
-        SaySomething.Instance.Speak(dialogueParameters);
-    }
-
-    public void GiveTip()
-    {
-        var amount = GameManager.Instance.RapportPercent * 10;
-        GameManager.Instance.AddTip(amount);
-        DialogueParameters dialogueParameters = new DialogueParameters
-        {
-            Context = new string[] { "the assistant gave you what you wanted" },
-            Guidance = "Thank the assistant and give them a tip of £" + (amount),
-            LookingForALaugh = false
         };
         SaySomething.Instance.Speak(dialogueParameters);
     }
@@ -87,6 +98,7 @@ public class ElephantActions
             Guidance = "Express your disappointment at the lack of laughter at your wonderful humor",
             LookingForALaugh = false
         };
+        GameManager.Instance.ChangeRapport(-LaughWrongPenalty);
         SaySomething.Instance.Speak(dialogueParameters);
     }
 
@@ -98,6 +110,8 @@ public class ElephantActions
             Guidance = "Express your appreciation for the assistant's laughter",
             LookingForALaugh = false
         };
+        GameManager.Instance.ChangeRapport(LaughCorrectBonus);
+
         SaySomething.Instance.Speak(dialogueParameters);
     }
 
@@ -145,6 +159,7 @@ public class ElephantActions
         var positive = changedTo == ElephantController.Instance.wantedMusicType;
         if (positive)
         {
+            GameManager.Instance.ChangeRapport((GameManager.Instance.patience - GameManager.Instance.patience) / rapportToPatienceDivider);
             DialogueParameters dialogueParameters = new DialogueParameters
             {
                 Context = new string[] { "The music has changed to " + changedTo.ToString() },
@@ -155,6 +170,7 @@ public class ElephantActions
         }
         else
         {
+            GameManager.Instance.ChangeRapport(-badMusicPenalty);
             DialogueParameters dialogueParameters = new DialogueParameters
             {
                 Context = new string[] { "The music has changed to or remained as " + changedTo.ToString() },

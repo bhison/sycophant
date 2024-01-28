@@ -25,10 +25,14 @@ public class GameManager : MonoBehaviour
 
     public int GameLengthMinimum = 240;
 
+    public float patience = 20f;
+    public float patienceLeftForTask = 0;
+
     public GenerateDialogue generateDialogue;
     
     public int Tips { get; private set; }
     public bool GameInSession{ get; private set; }
+    public bool TaskInSession{ get; private set; }
     public float RapportPercent { get; private set; }
     public float GameRunTime { get; private set; }
 
@@ -63,6 +67,8 @@ public class GameManager : MonoBehaviour
         Tips = 0;
         RapportPercent = StartingRapport;
         GameInSession = false;
+        TaskInSession = false;
+        patienceLeftForTask = 0;
         GameRunTime = 0;
         generateDialogue.ResetMessages();
     }
@@ -75,6 +81,7 @@ public class GameManager : MonoBehaviour
     public void AddTip(float amount)
     {
         Tips += Mathf.RoundToInt(amount);
+        AudioController.Instance.PlayTipSFX();
     }
 
     /**
@@ -83,7 +90,9 @@ public class GameManager : MonoBehaviour
     public void ChangeRapport(float amount)
     {
         RapportPercent = Math.Clamp(RapportPercent + amount, -1, 1);
+        if (amount < 0)
+        {
+            AudioController.Instance.PlayTrumpet();
+        }
     }
-
-
 }

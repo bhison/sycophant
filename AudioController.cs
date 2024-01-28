@@ -18,6 +18,9 @@ public class AudioController : MonoBehaviour
     public AudioClip tranceMusic;
     public AudioClip popMusic;
 
+    public AudioClip plink;
+    public AudioClip thud;
+
     [Range(0,1)]
     public float shopAudioVolume;
     
@@ -76,6 +79,15 @@ public class AudioController : MonoBehaviour
     public void PlayTipSFX()
     {
         AudioSource.PlayClipAtPoint(money, atCamera);
+    }
+    public void PlayPlink()
+    {
+        AudioSource.PlayClipAtPoint(plink, atCamera);
+    }   
+    
+    public void PlayThud()
+    {
+        AudioSource.PlayClipAtPoint(thud, atCamera);
     }
 
     public void PlayTrumpet()
