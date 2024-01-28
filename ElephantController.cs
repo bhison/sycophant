@@ -19,6 +19,12 @@ public class ElephantController : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         } 
     }
+    
+    public bool Speaking { get; private set; }
 
+    public void OnStopSpeaking()
+    {
+        
+    }
     
 }

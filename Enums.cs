@@ -32,3 +32,10 @@ public enum Temperature
     Hot,
     Cold
 }
+
+public enum ResponseExpectation
+{
+    Neutral,
+    Serious,
+    Laugh
+}

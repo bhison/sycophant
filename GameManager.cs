@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     public float RapportPercent { get; private set; }
     public float GameRunTime { get; private set; }
 
+    public string PlayerName = "Assistant";
+
     public bool GameLengthMinExceeded => GameInSession && GameRunTime > GameLengthMinimum;
 
     // Start is called before the first frame update
