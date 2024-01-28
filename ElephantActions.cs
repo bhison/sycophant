@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GenerativeAudio;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ElephantActions : MonoBehaviour
 {
@@ -9,8 +10,7 @@ public class ElephantActions : MonoBehaviour
     [SerializeField] private float rapportToPatienceDivider = 50;
     [SerializeField] private float rapportToMoneyMultiplier = 10;
     [SerializeField] private float badClothesPenalty = 40;
-    [SerializeField] private float badTempPenalty = 20;
-    [SerializeField] private float badMusicPenalty = 30;
+    [SerializeField] private float badOtherPenalty = 30;
 
     [SerializeField] private float LaughCorrectBonus = 25;
     [SerializeField] private float LaughWrongPenalty = 40;
@@ -94,6 +94,7 @@ public class ElephantActions : MonoBehaviour
             LookingForALaugh = true
         };
         SaySomething.Instance.Speak(dialogueParameters);
+        ElephantController.Instance.wantedResponseExpectation = ResponseExpectation.Laugh;
         ElephantController.Instance.isBusy = true;
     }
 
@@ -107,6 +108,7 @@ public class ElephantActions : MonoBehaviour
         };
         GameManager.Instance.ChangeRapport(-LaughWrongPenalty);
         SaySomething.Instance.Speak(dialogueParameters);
+        ElephantController.Instance.wantedResponseExpectation = ResponseExpectation.Neutral;
         ElephantController.Instance.isBusy = false;
     }
 
@@ -183,7 +185,7 @@ public class ElephantActions : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.ChangeRapport(-badMusicPenalty);
+            GameManager.Instance.ChangeRapport(-badOtherPenalty);
             DialogueParameters dialogueParameters = new DialogueParameters
             {
                 Context = new string[] { "The music has changed to or remained as " + changedTo.ToString() },
@@ -252,13 +254,23 @@ public class ElephantActions : MonoBehaviour
             };
             SaySomething.Instance.Speak(dialogueParameters);
         }
+        GameManager.Instance.ChangeRapport(-badClothesPenalty);
         ElephantController.Instance.ResetWants();
         ElephantController.Instance.isBusy = false;
     }
 
     public void CancelOtherReq()
     {
-        
+        DialogueParameters dialogueParameters = new DialogueParameters
+        {
+            Context = new string[] { "You cancel your request" },
+            Guidance = "tell the assistant to not bother and you don't care anymore. you are annoyed.",
+            LookingForALaugh = false
+        };
+        ElephantController.Instance.ResetWants();
+        ElephantController.Instance.isBusy = false;
+        GameManager.Instance.ChangeRapport(-badOtherPenalty);
+        SaySomething.Instance.Speak(dialogueParameters);
     }
     
     public void MinorAmusement()

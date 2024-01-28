@@ -21,6 +21,9 @@ namespace DefaultNamespace
         private ElephantActions _elephantActions;
         private List<Interactions> interactions;
 
+        private float tickLength = 3f;
+        private float timeTilNextTick = 0;
+
         private void Awake()
         {
             _elephantActions = GetComponent<ElephantActions>();
@@ -30,6 +33,24 @@ namespace DefaultNamespace
         {
             var gm = GameManager.Instance;
             var elephant = ElephantController.Instance;
+
+            if (gm.patienceLeftForTask > 0)
+            {
+                gm.patienceLeftForTask -= Time.deltaTime;
+                if (gm.patienceLeftForTask < 0)
+                {
+                    if (elephant.wantedClothesType != null)
+                    {
+                        _elephantActions.CancelClothesRequest();
+                    }
+                    else
+                    {
+                        _elephantActions.CancelOtherReq();
+                    }
+
+                    return;
+                }
+            }
             
             if (interactions.Count == 0)
             {
@@ -42,7 +63,11 @@ namespace DefaultNamespace
             {
                 if (elephant.isSpeaking) return;
                 if (elephant.isBusy) return;
+                timeTilNextTick -= Time.deltaTime;
+                if (timeTilNextTick > 0) return;
             }
+
+            timeTilNextTick = tickLength;
 
             var numClothesDone = 0;
             var haveReqdHat = interactions.Contains(Interactions.getHat);
