@@ -68,6 +68,11 @@ public class GameManager : MonoBehaviour
         Tips += amount;
     }
 
+    public void AddTip(float amount)
+    {
+        Tips += Mathf.RoundToInt(amount);
+    }
+
     /**
      * Amount should be -1 to 1 as represents %change
      */
@@ -75,4 +80,6 @@ public class GameManager : MonoBehaviour
     {
         RapportPercent = Math.Clamp(RapportPercent + amount, -1, 1);
     }
+
+
 }

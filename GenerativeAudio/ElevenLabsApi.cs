@@ -32,6 +32,12 @@ public class ElevenlabsAPI : MonoBehaviour {
         _voiceId = voiceId;
     }
 
+    public void Start()
+    {
+        // Often first fetch fails so this isn't just as a joke!
+        GetAudio("Uuh, is this thing on??");
+    }
+
     public void GetAudio(string text) {
         StartCoroutine(DoRequest(text));
     }

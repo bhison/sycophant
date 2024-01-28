@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace GenerativeAudio
@@ -37,8 +38,17 @@ namespace GenerativeAudio
         
         void PlayClip(AudioClip clip)
         {
-            // Or error check and retry here...
+            var len = clip.length;
             AudioSource.PlayClipAtPoint(clip, elephant.transform.position);
+            StartCoroutine(ExecuteAfterSeconds(len));
+        }
+        
+        IEnumerator ExecuteAfterSeconds
+        (float seconds)
+        {
+            ElephantController.Instance.SetStartSpeaking();
+            yield return new WaitForSeconds(seconds);
+            ElephantController.Instance.OnStopSpeaking();
         }
     }
 }

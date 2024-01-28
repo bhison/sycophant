@@ -21,10 +21,9 @@ public enum Feeling
 
 public enum MusicType
 {
-    HipHop,
-    Jungle,
-    Techno,
-    Rock
+    EasyListening,
+    Trance,
+    PopBanger
 }
 
 public enum Temperature
