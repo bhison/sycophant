@@ -4,6 +4,7 @@ namespace GenerativeAudio
 {
     public class SaySomething : MonoBehaviour
     {
+        public GameObject elephant;
         public static SaySomething Instance { get; private set; }
 
         private void Awake()
@@ -37,7 +38,7 @@ namespace GenerativeAudio
         void PlayClip(AudioClip clip)
         {
             // Or error check and retry here...
-            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position);
+            AudioSource.PlayClipAtPoint(clip, elephant.transform.position);
         }
     }
 }
