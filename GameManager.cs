@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     public float patienceLeftForTask = 0;
 
     public GenerateDialogue generateDialogue;
+
+    public bool waitingToEnd = false;
     
     public int Tips { get; private set; }
     public bool GameInSession{ get; private set; }
@@ -61,6 +63,10 @@ public class GameManager : MonoBehaviour
         }
 
         _gameFlow.DoGameStuff();
+        if (waitingToEnd && !ElephantController.Instance.isBusy && !ElephantController.Instance.isSpeaking)
+        {
+            QuitToLobby();
+        }
     }
 
     // This should be triggered when the game scene starts
@@ -102,5 +108,15 @@ public class GameManager : MonoBehaviour
         {
             AudioController.Instance.PlayTrumpet();
         }
+    }
+
+    public void EndGame()
+    {
+        waitingToEnd = true;
+    }
+
+    private void QuitToLobby()
+    {
+        //something here
     }
 }

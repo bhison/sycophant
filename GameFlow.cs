@@ -65,7 +65,7 @@ namespace DefaultNamespace
                 return;
             }
 
-            if (interactions.Count == 2)
+            if (interactions.Count is 2 or 5)
             {
                 _elephantActions.TellFunnyAnecdote();
                 interactions.Add(Interactions.makeJoke);
@@ -79,35 +79,33 @@ namespace DefaultNamespace
                     interactions.Add(Interactions.changeTemp);
                     return;
                 }
-                else
-                {
-                    _elephantActions.RequestMusicChange(Random.value > 0.5f ? MusicType.Trance : MusicType.PopBanger);
-                    interactions.Add(Interactions.changeMusic);
-                    return;
-                }
+
+                _elephantActions.RequestMusicChange(Random.value > 0.5f ? MusicType.Trance : MusicType.PopBanger);
+                interactions.Add(Interactions.changeMusic);
+                return;
             }
 
             if (interactions.Count == 4)
             {
-                var clothes = ClothesType.Shoes;
+                var clothes = Random.value > 0.5f ? ClothesType.Shoes : ClothesType.Hat;
                 var describer = Random.value > 0.5f ? Describer.Stylish : Describer.Warm;
                 _elephantActions.AskForClothes(clothes, describer );
                 elephant.wantedClothesType = clothes;
                 elephant.wantedDescriber = describer;
-                interactions.Add(Interactions.getShoes);
+                interactions.Add(clothes == ClothesType.Shoes ? Interactions.getShoes : Interactions.getHat);
                 return;
             }
-
-            if (interactions.Count == 5)
+            
+            if (interactions.Count == 6)
             {
                 _elephantActions.Goodbye();
-                
+                StartCoroutine(EndGameAfterSeconds(35));
             }
         }
         IEnumerator EndGameAfterSeconds(int seconds)
         {
             yield return new WaitForSeconds(seconds);
-            GameManager.Instance.GameRunTime = 999;
+            GameManager.Instance.EndGame();
         }
     }
 
