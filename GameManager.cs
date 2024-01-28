@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GenerativeAudio;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -23,6 +24,8 @@ public class GameManager : MonoBehaviour
     public float StartingRapport = 0.3f;
 
     public int GameLengthMinimum = 240;
+
+    public GenerateDialogue generateDialogue;
     
     public int Tips { get; private set; }
     public bool GameInSession{ get; private set; }
@@ -61,6 +64,7 @@ public class GameManager : MonoBehaviour
         RapportPercent = StartingRapport;
         GameInSession = false;
         GameRunTime = 0;
+        generateDialogue.ResetMessages();
     }
     
     public void AddTip(int amount)

@@ -17,10 +17,16 @@ namespace GenerativeAudio
 
     public class GenerateDialogue : MonoBehaviour
     {
+        public bool useChatHistory = true;
         [SerializeField] private string openAiKey;
         [SerializeField] private string organisationId;
 
         private List<Message> _messages;
+
+        public void ResetMessages()
+        {
+            _messages.Clear();
+        }
         
         private OpenAIClient api = null;
         private void Awake()
@@ -55,16 +61,20 @@ namespace GenerativeAudio
             var concatContext = string.Join(". ", parameters.Context) + ". ";
             var requestString = "Context:" + concatContext + "/Guidance:" + parameters.Guidance +
                 "/LookingForALaugh:" + parameters.LookingForALaugh;
-            _messages = new List<Message>
-            {
-                new Message(Role.System, ConfigStatements.Setup),
-                new Message(Role.System, ConfigStatements.ExampleSituationPrompt),
-                new Message(Role.User, requestString)
-            };
+            _messages = _messages == null || !useChatHistory
+                ? new List<Message>
+                {
+                    new Message(Role.System, ConfigStatements.Setup),
+                    new Message(Role.System, ConfigStatements.ExampleSituationPrompt),
+                    new Message(Role.User, requestString)
+                }
+                : _messages;
             var chatRequest = new ChatRequest(_messages, Model.GPT3_5_Turbo);
             Debug.Log(chatRequest);
             var response = await api.ChatEndpoint.GetCompletionAsync(chatRequest);
             var choice = response.FirstChoice;
+            _messages.Add(new Message(Role.User, requestString));
+            _messages.Add(choice.Message);
             Debug.Log(
                 $"[{choice.Index}] {choice.Message.Role}: {choice.Message} | Finish Reason: {choice.FinishReason}");
             return choice.Message.ToString();
